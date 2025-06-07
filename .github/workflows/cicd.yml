@@ -28,4 +28,4 @@ jobs:
       - name: Run Python Scan
         run: python app/scripts/run_scan.py 43de54bc-29c1-4753-900a-e55624e13e18
         env:
-          PYTHONPATH: /app
+          PYTHONPATH: ${{ github.workspace }}/app
