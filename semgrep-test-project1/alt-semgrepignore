@@ -1,0 +1,2 @@
+# Alternate Semgrepignore file to be consulted via --semgrepignore-filename
+*.py

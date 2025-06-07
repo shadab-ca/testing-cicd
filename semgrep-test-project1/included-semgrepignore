@@ -1,0 +1,3 @@
+# These patterns are included with ':include' in the main .semgrepignore
+
+semgrepignored-via-include.py
