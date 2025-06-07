@@ -26,26 +26,42 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main  # Ensure correct branch; change to 'master' if needed
+          ref: main  # Change to 'master' if needed
       - name: Debug Repository Contents
         run: |
           echo "Current directory: $(pwd)"
           ls -R ${{ github.workspace }} || echo "Repository directory inaccessible or empty"
+      - name: Debug App Package
+        run: |
+          ls -l /app/app/__init__.py || echo "__init__.py not found"
+          cat /app/app/__init__.py || echo "Failed to display __init__.py"
       - name: Debug Container Files
         run: |
           ls -l /app/app/scripts/run_scan.py
           ls -l /app/app/db/session.py
           ls -l /app/app/core/config.py
-          ls -l /app/app/services/scan.py || echo "scan.py not found"
+          ls -l /app/app/services/scan.py
+          ls -l /app/app/models/scan.py || echo "scan.py not found"
+          ls -l /app/app/models/finding.py || echo "finding.py not found"
+          ls -l /app/app/models/repository.py || echo "repository.py not found"
+          ls -l /app/app/services/semgrep.py || echo "semgrep.py not found"
+          ls -l /app/app/services/supply_chain.py || echo "supply_chain.py not found"
+          ls -l /app/app/services/dependencies.py || echo "dependencies.py not found"
+          ls -l /app/app/services/secrets.py || echo "secrets.py not found"
           cat /app/app/db/session.py || echo "Failed to display session.py"
           cat /app/app/services/scan.py || echo "Failed to display scan.py"
+          cat /app/app/models/scan.py || echo "Failed to display scan.py"
+          cat /app/app/models/finding.py || echo "Failed to display finding.py"
+          cat /app/app/models/repository.py || echo "Failed to display repository.py"
       - name: Debug Python Environment
         run: |
           echo "PYTHONPATH: $PYTHONPATH"
           python -c "import sys; print(sys.path)"
         env:
           PYTHONPATH: /app/app
-      - name: Check Installed Packages
-        run: pip list
+      - name: Test Import
+        run: PYTHONPATH=/app/app python -c "import app.db.session; print('Imported app.db.session successfully')"
       - name: Run Python Scan
-        run: PYTHONPATH=/app/app python /app/app/scripts/run_scan.py 43de54bc-29c1-4753-900a-e55624e13e18
+        run: |
+          cd /app/app/scripts
+          PYTHONPATH=/app/app python run_scan.py 43de54bc-29c1-4753-900a-e55624e13e18
