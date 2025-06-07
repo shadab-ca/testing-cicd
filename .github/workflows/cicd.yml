@@ -22,9 +22,9 @@ jobs:
     env:
       SEMGREP_APP_TOKEN: ${{ secrets.ATOMICA_APP_TOKEN }}
     container:
-      image: shadab0565/atomica-backend
+      image: shadab0565/atomica
     if: (github.actor != 'dependabot[bot]')
     steps:
       - uses: actions/checkout@v4
       - name: Run Python Scan
-        run: export PYTHONPATH=/app && cd /app && python app/scripts/run_scan.py 43de54bc-29c1-4753-900a-e55624e13e18
+        run: semgrep  --config auto --json ${{ github.workspace }}
