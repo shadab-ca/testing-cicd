@@ -1,3 +1,4 @@
+
 name: Atomica
 on:
   workflow_dispatch: {}
@@ -8,9 +9,9 @@ on:
       - master
     paths:
       - .github/workflows/cicd.yml
-  schedule:
-    # random HH:MM to avoid a load spike on GitHub Actions at 00:00
-    - cron: '12 15 * * *'
+  # schedule:
+  #   # random HH:MM to avoid a load spike on GitHub Actions at 00:00
+  #   - cron: '12 15 * * *'
 
 jobs:
   atomica:
@@ -25,50 +26,5 @@ jobs:
     if: (github.actor != 'dependabot[bot]')
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: main  # Change to 'master' if needed
-      - name: Debug Repository Contents
-        run: |
-          echo "Current directory: $(pwd)"
-          ls -R ${{ github.workspace }} || echo "Repository directory inaccessible or empty"
-      - name: Check for Namespace Conflicts
-        run: |
-          find /app -name "app.py" || echo "No app.py found"
-          find /usr/local/lib/python3.11/site-packages -name "app.py" || echo "No app.py found in site-packages"
-      - name: Debug App Package
-        run: |
-          ls -l /app/app/__init__.py || echo "__init__.py not found"
-          cat /app/app/__init__.py || echo "Failed to display __init__.py"
-          xxd /app/app/__init__.py || echo "Failed to display __init__.py in hex"
-      - name: Debug Container Files
-        run: |
-          ls -l /app/app/scripts/run_scan.py
-          ls -l /app/app/db/session.py
-          ls -l /app/app/core/config.py
-          ls -l /app/app/services/scan.py
-          ls -l /app/app/models/scan.py
-          ls -l /app/app/models/finding.py
-          ls -l /app/app/models/repository.py
-          ls -l /app/app/services/semgrep.py
-          ls -l /app/app/services/supply_chain.py
-          ls -l /app/app/services/dependencies.py
-          ls -l /app/app/services/secrets.py
-          cat /app/app/services/semgrep.py || echo "Failed to display semgrep.py"
-          cat /app/app/services/supply_chain.py || echo "Failed to display supply_chain.py"
-          cat /app/app/services/dependencies.py || echo "Failed to display dependencies.py"
-          cat /app/app/services/secrets.py || echo "Failed to display secrets.py"
-      - name: Debug Python Environment
-        run: |
-          echo "PYTHONPATH: $PYTHONPATH"
-          python -c "import sys; print(sys.path)"
-        env:
-          PYTHONPATH: /app/app
-      - name: Test Import
-        run: PYTHONPATH=/app/app python -c "import app.db.session; print('Imported app.db.session successfully')"
       - name: Run Python Scan
-        run: |
-          cd /app/app/scripts
-          PYTHONPATH=/app/app python run_scan.py 43de54bc-29c1-4753-900a-e55624e13e18
-      - name: Run Python Scan (Module)
-        run: PYTHONPATH=/app python -m app.scripts.run_scan 43de54bc-29c1-4753-900a-e55624e13e18
-        continue-on-error: true
+        run: python /app/app/scripts/run_scan.py 43de54bc-29c1-4753-900a-e55624e13e18
