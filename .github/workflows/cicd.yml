@@ -28,7 +28,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Run Python Scan
-        run: semgrep --config=p/ci --metrics=off --json ${{ github.workspace }}
+        run: |
+          cd ${{ github.workspace }}
+          semgrep --config auto --json --metrics=off . > semgrep-results.json
       - name: Send Results to Webhook
         run: |
           curl -X POST \
