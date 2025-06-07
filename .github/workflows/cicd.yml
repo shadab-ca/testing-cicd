@@ -25,11 +25,14 @@ jobs:
     if: (github.actor != 'dependabot[bot]')
     steps:
       - uses: actions/checkout@v4
-      - name: Debug Container Contents
+      - name: Debug Repository Contents
         run: |
           echo "Current directory: $(pwd)"
+          ls -R ${{ github.workspace }} || echo "Failed to list repository contents"
+      - name: Debug Container Contents
+        run: |
           ls -R /app || echo "Failed to list /app in container"
       - name: Run Python Scan
-        run: python /app/scripts/run_scan.py 43de54bc-29c1-4753-900a-e55624e13e18
+        run: python /app/app/scripts/run_scan.py 43de54bc-29c1-4753-900a-e55624e13e18
         env:
-          PYTHONPATH: /app
+          PYTHONPATH: /app/app
