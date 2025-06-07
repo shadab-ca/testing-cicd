@@ -28,12 +28,15 @@ jobs:
       - name: Debug Repository Contents
         run: |
           echo "Current directory: $(pwd)"
-          ls -R ${{ github.workspace }} || echo "Failed to list repository contents"
+          ls -R ${{ github.workspace }} || echo "Repository directory inaccessible or empty"
       - name: Debug Container Files
         run: |
           ls -l /app/app/scripts/run_scan.py
           ls -l /app/app/db/session.py
-          cat /app/app/scripts/run_scan.py
+          ls -l /app/app/core/config.py || echo "config.py not found"
+          cat /app/app/core/config.py || echo "Failed to display config.py"
+      - name: Check Installed Packages
+        run: pip list
       - name: Run Python Scan
         run: python /app/app/scripts/run_scan.py 43de54bc-29c1-4753-900a-e55624e13e18
         env:
