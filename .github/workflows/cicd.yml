@@ -31,7 +31,7 @@ jobs:
         run: |
           pwd
           ls -la
-          semgrep --config auto --json --metrics=off . > semgrep-results.json
+          semgrep --config auto --json . > semgrep-results.json
       - name: Send Results to Webhook
         run: |
           curl -X POST \
