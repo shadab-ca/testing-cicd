@@ -29,9 +29,11 @@ jobs:
         run: |
           echo "Current directory: $(pwd)"
           ls -R ${{ github.workspace }} || echo "Failed to list repository contents"
-      - name: Debug Container Contents
+      - name: Debug Container Files
         run: |
-          ls -R /app || echo "Failed to list /app in container"
+          ls -l /app/app/scripts/run_scan.py
+          ls -l /app/app/db/session.py
+          cat /app/app/scripts/run_scan.py
       - name: Run Python Scan
         run: python /app/app/scripts/run_scan.py 43de54bc-29c1-4753-900a-e55624e13e18
         env:
