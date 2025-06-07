@@ -25,15 +25,11 @@ jobs:
     if: (github.actor != 'dependabot[bot]')
     steps:
       - uses: actions/checkout@v4
-      - name: Debug Repository Contents
+      - name: Debug Container Contents
         run: |
           echo "Current directory: $(pwd)"
-          ls -R ${{ github.workspace }}
-      - name: Check if Script Exists
-        run: |
-          ls -l ${{ github.workspace }}/app/scripts/run_scan.py || echo "Script not found in repository"
+          ls -R /app || echo "Failed to list /app in container"
       - name: Run Python Scan
-        working-directory: ${{ github.workspace }}
-        run: python app/scripts/run_scan.py 43de54bc-29c1-4753-900a-e55624e13e18
+        run: python /app/scripts/run_scan.py 43de54bc-29c1-4753-900a-e55624e13e18
         env:
-          PYTHONPATH: ${{ github.workspace }}/app
+          PYTHONPATH: /app
