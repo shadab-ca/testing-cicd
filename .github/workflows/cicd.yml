@@ -1,4 +1,3 @@
-
 name: Atomica
 on:
   workflow_dispatch: {}
@@ -21,10 +20,18 @@ jobs:
       contents: read
     env:
       SEMGREP_APP_TOKEN: ${{ secrets.ATOMICA_APP_TOKEN }}
+      # RESULTS_URL: ${{ secrets.BACKEND_URL }}/api/v1/semgrep/scan-results
+      RESULTS_URL: https://18fa-139-5-1-105.ngrok-free.app/api/v1/semgrep/scan-results
     container:
       image: shadab0565/atomica
     if: (github.actor != 'dependabot[bot]')
     steps:
       - uses: actions/checkout@v4
       - name: Run Python Scan
-        run: semgrep  --config auto --json ${{ github.workspace }}
+        run: semgrep --config auto --json ${{ github.workspace }} > semgrep-results.json
+      - name: Send Results to Webhook
+        run: |
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            -d @semgrep-results.json \
+            ${{ env.RESULTS_URL }}
