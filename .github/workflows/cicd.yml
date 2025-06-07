@@ -25,6 +25,8 @@ jobs:
     if: (github.actor != 'dependabot[bot]')
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main  # Ensure correct branch; change to 'master' if needed
       - name: Debug Repository Contents
         run: |
           echo "Current directory: $(pwd)"
@@ -33,11 +35,17 @@ jobs:
         run: |
           ls -l /app/app/scripts/run_scan.py
           ls -l /app/app/db/session.py
-          ls -l /app/app/core/config.py || echo "config.py not found"
-          cat /app/app/core/config.py || echo "Failed to display config.py"
+          ls -l /app/app/core/config.py
+          ls -l /app/app/services/scan.py || echo "scan.py not found"
+          cat /app/app/db/session.py || echo "Failed to display session.py"
+          cat /app/app/services/scan.py || echo "Failed to display scan.py"
+      - name: Debug Python Environment
+        run: |
+          echo "PYTHONPATH: $PYTHONPATH"
+          python -c "import sys; print(sys.path)"
+        env:
+          PYTHONPATH: /app/app
       - name: Check Installed Packages
         run: pip list
       - name: Run Python Scan
-        run: python /app/app/scripts/run_scan.py 43de54bc-29c1-4753-900a-e55624e13e18
-        env:
-          PYTHONPATH: /app/app
+        run: PYTHONPATH=/app/app python /app/app/scripts/run_scan.py 43de54bc-29c1-4753-900a-e55624e13e18
